@@ -3,10 +3,11 @@
 A Clojure library designed to aws sdk well.
 
 - Amazon SNS
+- ec2
 
 ## Usage
 
-example
+SMS
 
 ```clojure
 clj-aws-sdk.core=> (clj-aws-sdk.example.sns/send-message "+8190********" "Hello world")
@@ -15,3 +16,17 @@ nil
 clj-aws-sdk.core=>
 ```
 
+ec2
+
+```clojure
+clj-aws-sdk.core=> (use 'clj-aws-sdk.example.ec2)
+nil
+clj-aws-sdk.core=> (map #(println (keys %)) (describe-securitygroup))
+(:group-id :vpc-id :description)
+(:group-id :vpc-id :description)
+(nil nil)
+clj-aws-sdk.core=> (map #(println (keys %)) (describe-keypairs))
+(:name :finger-print)
+(nil)
+clj-aws-sdk.core=>
+```
