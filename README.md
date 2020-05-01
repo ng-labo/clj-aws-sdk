@@ -30,11 +30,11 @@ clj-aws-sdk.core=> (run-instance image-id "my-keypair-1" "launch-wizard-1")
 clj-aws-sdk.core=> (describe-instances)
 ({:instance-id "i-0079b2025d22c0157", :state "pending"})
 clj-aws-sdk.core=> (stop-instance "i-0079b2025d22c0157")
-#object[com.amazonaws.services.ec2.model.StopInstancesResult 0x213bc663 "{StoppingInstances: [{CurrentState: {Code: 80,Name: stopped},InstanceId: i-0079b2025d22c0157,PreviousState: {Code: 80,Name: stopped}}]}"]
+{:instance-id "i-0079b2025d22c0157", :state "stopped"}
 clj-aws-sdk.core=> (describe-instances)
 ({:instance-id "i-0079b2025d22c0157", :state "stopped"})
 clj-aws-sdk.core=> (terminate-instance "i-0079b2025d22c0157")
-#object[com.amazonaws.services.ec2.model.TerminateInstancesResult 0x4a20061d "{TerminatingInstances: [{CurrentState: {Code: 48,Name: terminated},InstanceId: i-0079b2025d22c0157,PreviousState: {Code: 80,Name: stopped}}]}"]
+{:instance-id "i-0079b2025d22c0157", :state "terminated"}
 clj-aws-sdk.core=> (describe-instances)
 ({:instance-id "i-0079b2025d22c0157", :state "terminated"})
 

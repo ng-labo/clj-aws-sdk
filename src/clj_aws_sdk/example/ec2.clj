@@ -80,7 +80,7 @@
   (let [acli (AmazonEC2ClientBuilder/defaultClient)
         req (doto (RunInstancesRequest.)
                   (.withImageId image-id)
-                  (.withInstanceType "t1.micro") ;TODO lookup from T1Micro directly
+                  (.withInstanceType InstanceType/T1Micro)
                   (.withMinCount (int 1))
                   (.withMaxCount (int 1))
                   (.withKeyName keypair-name)
@@ -94,16 +94,25 @@
     (let [response (.describeInstances acli req)]
       (read-reservations response))))
 
+(defn- read-statechange [states]
+  (map
+    (fn [state]
+      { :instance-id (.getInstanceId state)
+        :state (.getName (.getCurrentState state))
+      })
+    states))
+
 (defn stop-instance [instance-id]
   (let [acli (AmazonEC2ClientBuilder/defaultClient)
         req (doto (StopInstancesRequest.)
                   (.setInstanceIds [instance-id]))]
     (let [response (.stopInstances acli req)]
-      response)))
+      (read-statechange (.getStoppingInstances response)))))
 
 (defn terminate-instance [instance-id]
   (let [acli (AmazonEC2ClientBuilder/defaultClient)
         req (doto (TerminateInstancesRequest.)
                   (.setInstanceIds [instance-id]))]
     (let [response (.terminateInstances acli req)]
-      response)))
+      (read-statechange (.getTerminatingInstances response)))))
+
