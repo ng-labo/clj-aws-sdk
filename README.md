@@ -21,12 +21,21 @@ ec2
 ```clojure
 clj-aws-sdk.core=> (use 'clj-aws-sdk.example.ec2)
 nil
-clj-aws-sdk.core=> (map #(println (keys %)) (describe-securitygroup))
-(:group-id :vpc-id :description)
-(:group-id :vpc-id :description)
-(nil nil)
-clj-aws-sdk.core=> (map #(println (keys %)) (describe-keypairs))
-(:name :finger-print)
-(nil)
-clj-aws-sdk.core=>
+clj-aws-sdk.core=> (map #(get % :group-name) (describe-securitygroup))
+("launch-wizard-1" "default")
+clj-aws-sdk.core=> (map #(get % :name) (describe-keypairs))
+("my-keypair-1")
+clj-aws-sdk.core=> (run-instance image-id "my-keypair-1" "launch-wizard-1")
+"i-0079b2025d22c0157"
+clj-aws-sdk.core=> (describe-instances)
+({:instance-id "i-0079b2025d22c0157", :state "pending"})
+clj-aws-sdk.core=> (stop-instance "i-0079b2025d22c0157")
+#object[com.amazonaws.services.ec2.model.StopInstancesResult 0x213bc663 "{StoppingInstances: [{CurrentState: {Code: 80,Name: stopped},InstanceId: i-0079b2025d22c0157,PreviousState: {Code: 80,Name: stopped}}]}"]
+clj-aws-sdk.core=> (describe-instances)
+({:instance-id "i-0079b2025d22c0157", :state "stopped"})
+clj-aws-sdk.core=> (terminate-instance "i-0079b2025d22c0157")
+#object[com.amazonaws.services.ec2.model.TerminateInstancesResult 0x4a20061d "{TerminatingInstances: [{CurrentState: {Code: 48,Name: terminated},InstanceId: i-0079b2025d22c0157,PreviousState: {Code: 80,Name: stopped}}]}"]
+clj-aws-sdk.core=> (describe-instances)
+({:instance-id "i-0079b2025d22c0157", :state "terminated"})
+
 ```

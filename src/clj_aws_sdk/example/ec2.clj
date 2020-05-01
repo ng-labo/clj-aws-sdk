@@ -10,6 +10,9 @@
               IpRange
               DescribeKeyPairsRequest
               RunInstancesRequest
+              DescribeInstancesRequest
+              StopInstancesRequest
+              TerminateInstancesRequest
               InstanceType])
   (:import [com.amazonaws.services.ec2 AmazonEC2ClientBuilder])
 )
@@ -42,6 +45,7 @@
         req (DescribeSecurityGroupsRequest.)]
     (map (fn [sg]
            { :group-id (.getGroupId sg)
+             :group-name (.getGroupName sg)
              :vpc-id (.getVpcId sg)
              :description (.getDescription sg) })
          (.getSecurityGroups (.describeSecurityGroups acli req)))))
@@ -61,6 +65,17 @@
           })
          (.getKeyPairs (.describeKeyPairs acli req)))))
 
+(defn- read-reservations [response]
+    (map
+      (fn [reservation]
+         (reduce conj (map (fn [instance]
+                { :instance-id (.getInstanceId instance)
+                  :public-ip (.getPublicIpAddress instance)
+                  :state (.getName (.getState instance))
+                })
+              (.getInstances reservation))))
+      (.getReservations response)))
+
 (defn run-instance [image-id keypair-name group-name]
   (let [acli (AmazonEC2ClientBuilder/defaultClient)
         req (doto (RunInstancesRequest.)
@@ -71,5 +86,24 @@
                   (.withKeyName keypair-name)
                   (.setSecurityGroups [group-name]))]
     (let [response (.runInstances acli req)]
+      (.getInstanceId (first (.getInstances (.getReservation response)))))))
+
+(defn describe-instances []
+  (let [acli (AmazonEC2ClientBuilder/defaultClient)
+        req (DescribeInstancesRequest.)]
+    (let [response (.describeInstances acli req)]
+      (read-reservations response))))
+
+(defn stop-instance [instance-id]
+  (let [acli (AmazonEC2ClientBuilder/defaultClient)
+        req (doto (StopInstancesRequest.)
+                  (.setInstanceIds [instance-id]))]
+    (let [response (.stopInstances acli req)]
       response)))
 
+(defn terminate-instance [instance-id]
+  (let [acli (AmazonEC2ClientBuilder/defaultClient)
+        req (doto (TerminateInstancesRequest.)
+                  (.setInstanceIds [instance-id]))]
+    (let [response (.terminateInstances acli req)]
+      response)))
