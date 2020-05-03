@@ -4,6 +4,7 @@ A Clojure library designed to aws sdk well.
 
 - Amazon SNS
 - ec2
+- Amazon SQS
 
 ## Usage
 
@@ -37,5 +38,23 @@ clj-aws-sdk.core=> (terminate-instance "i-0079b2025d22c0157")
 {:instance-id "i-0079b2025d22c0157", :state "terminated"}
 clj-aws-sdk.core=> (describe-instances)
 ({:instance-id "i-0079b2025d22c0157", :state "terminated"})
+
+```
+
+SQS
+
+```clojure
+clj-aws-sdk.core=> (use 'clj-aws-sdk.example.sqs)
+nil
+clj-aws-sdk.core=> (def queue-name "My-Test-Queue-1")
+#'clj-aws-sdk.core/queue-name
+clj-aws-sdk.core=> (create-queue queue-name)
+nil
+clj-aws-sdk.core=> (list-queue)
+["https://sqs.ap-northeast-1.amazonaws.com/389561742621/My-Test-Queue-1"]
+clj-aws-sdk.core=> (send-queue-message queue-name "Hello SQS!")
+#object[com.amazonaws.services.sqs.model.SendMessageResult 0x3adc41b9 "{MD5OfMessageBody: 62ff2d262678b73fdc2e47c7ea60f87f,MessageId: 97f7f04f-1af4-4d40-9a4$-39c4c8e2d1c8,}"]
+clj-aws-sdk.core=> (receive-message queue-name)
+("Hello SQS!")
 
 ```
