@@ -5,6 +5,7 @@ A Clojure library designed to aws sdk well.
 - Amazon SNS
 - ec2
 - Amazon SQS
+- CostExplorer
 
 ## Usage
 
@@ -56,5 +57,21 @@ clj-aws-sdk.core=> (send-queue-message queue-name "Hello SQS!")
 #object[com.amazonaws.services.sqs.model.SendMessageResult 0x3adc41b9 "{MD5OfMessageBody: 62ff2d262678b73fdc2e47c7ea60f87f,MessageId: 97f7f04f-1af4-4d40-9a4$-39c4c8e2d1c8,}"]
 clj-aws-sdk.core=> (receive-message queue-name)
 ("Hello SQS!")
+```
+
+CostExplorer
+
+```clojjure
+clj-aws-sdk.core=> (use 'clj-aws-sdk.example.costexplorer)
+nil
+clj-aws-sdk.core=> (map #(println (get % :time-period) (get % :total)) (query "2020-04-26" "2020-05-03"))
+2020-04-26 {:amount 0.3936429385, :unit USD}
+2020-04-27 {:amount 0, :unit USD}
+2020-04-28 {:amount 0, :unit USD}
+2020-04-29 {:amount 0, :unit USD}
+2020-04-30 {:amount 0.0196199884, :unit USD}
+2020-05-01 {:amount 0.0408245384, :unit USD}
+2020-05-02 {:amount 0.41, :unit USD}
+(nil nil nil nil nil nil nil)
 
 ```
