@@ -61,7 +61,7 @@ clj-aws-sdk.core=> (receive-message queue-name)
 
 CostExplorer
 
-```clojjure
+```clojure
 clj-aws-sdk.core=> (use 'clj-aws-sdk.example.costexplorer)
 nil
 clj-aws-sdk.core=> (map #(println (get % :time-period) (get % :total)) (query "2020-04-26" "2020-05-03"))
